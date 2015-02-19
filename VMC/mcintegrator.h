@@ -24,7 +24,8 @@ public:
 
 class MCIntegratorParameters
 {
-
+public:
+    double charge = 1.0;
 };
 
 class MCIntegrator
@@ -36,6 +37,7 @@ private:
     function<void(vec3 &position)> m_walkerFunction;
     function<double(MCIntegratorParameters *parameters, vector<vec3> &positions)> m_trialFunction;
     function<double(MCIntegratorParameters *parameters, vector<vec3> &positions)> m_localEnergy;
+    function<double(MCIntegratorParameters *parameters, vector<vec3> &positions)> m_localEnergyNumerical;
 public:
     MCIntegrator();
     ~MCIntegrator();
@@ -55,4 +57,5 @@ public:
     void setInitialPositions(const vector<vec3> &initialPositions);
     MCIntegratorParameters *parameters() const;
     void setParameters(MCIntegratorParameters *parameters);
+    void setDefaultLocalEnergy();
 };

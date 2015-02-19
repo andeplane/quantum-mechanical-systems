@@ -146,7 +146,53 @@ MCIntegrator::MCIntegrator() :
     m_parameters(NULL),
     m_numberOfAcceptedMoves(0)
 {
+    setDefaultLocalEnergy();
+}
 
+void MCIntegrator::setDefaultLocalEnergy() {
+    m_localEnergyNumerical = [&](MCIntegratorParameters *parameters, vector<vec3> &positions) {
+        double waveFunctionCurrent = m_trialFunction(parameters, positions);
+        const unsigned int numberOfParticles = positions.size();
+
+        double h = 0.001;
+        double oneOverHSquared = 1e6;
+        // Kinetic energy
+        double kineticEnergy = 0;
+        for(unsigned int i = 0; i < numberOfParticles; i++) {
+            for(unsigned int j = 0; j < 3; j++) {
+                // Increase a small change in j'th direction
+                positions[i][j] += h;
+                double waveFunctionPlus = m_trialFunction(parameters, positions);
+                positions[i][j] -= 2.0*h;
+                double waveFunctionMinus = m_trialFunction(parameters, positions);
+
+                // This is the standard u'' ≈ (f+ - 2f + f-)/h^2
+                kineticEnergy -= (waveFunctionMinus + waveFunctionPlus - 2 * waveFunctionCurrent);
+
+                positions[i][j] += h;
+            }
+        }
+        kineticEnergy = 0.5 * oneOverHSquared * kineticEnergy / waveFunctionCurrent;
+
+        // Potential energy
+        double potentialEnergy = 0;
+
+        for(unsigned int i = 0; i < numberOfParticles; i++) {
+            // Coulomb repulsion
+            potentialEnergy -= parameters->charge / positions[i].length();
+
+            // Contribution from electron-electron potential
+            for(unsigned int j = i + 1; j < numberOfParticles; j++) {
+                vec3 deltaR = positions[i];
+                deltaR.addAndMultiply(positions[j], -1.0);
+                potentialEnergy += 1.0 / deltaR.length();
+            }
+        }
+
+        return kineticEnergy + potentialEnergy;
+    };
+
+    m_localEnergy = m_localEnergyNumerical;
 }
 
 MCIntegrator::~MCIntegrator()

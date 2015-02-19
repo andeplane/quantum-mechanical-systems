@@ -26,6 +26,10 @@ public:
     vec3 operator/(double scalar);
     vec3 &operator/=(double scalar);
     inline vec3 operator-() { return vec3(-m_vec[0], -m_vec[1], -m_vec[2]); }
+    void addComponent(int component, float value) {
+        m_vec[component] += value;
+    }
+
     void add(vec3 &rhs) {
         m_vec[0] += rhs.x();
         m_vec[1] += rhs.y();
