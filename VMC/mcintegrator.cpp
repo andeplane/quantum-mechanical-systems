@@ -151,11 +151,11 @@ MCIntegrator::MCIntegrator() :
 
 void MCIntegrator::setDefaultLocalEnergy() {
     m_localEnergyNumerical = [&](MCIntegratorParameters *parameters, vector<vec3> &positions) {
-        double waveFunctionCurrent = m_trialFunction(parameters, positions);
+        const double waveFunctionCurrent = m_trialFunction(parameters, positions);
         const unsigned int numberOfParticles = positions.size();
 
-        double h = 0.001;
-        double oneOverHSquared = 1e6;
+        const double h = 0.001;
+        const double oneOverHSquared = 1e6;
         // Kinetic energy
         double kineticEnergy = 0;
         for(unsigned int i = 0; i < numberOfParticles; i++) {
@@ -184,7 +184,7 @@ void MCIntegrator::setDefaultLocalEnergy() {
             // Contribution from electron-electron potential
             for(unsigned int j = i + 1; j < numberOfParticles; j++) {
                 vec3 deltaR = positions[i];
-                deltaR.addAndMultiply(positions[j], -1.0);
+                deltaR.subtract(positions[j]);
                 potentialEnergy += 1.0 / deltaR.length();
             }
         }
