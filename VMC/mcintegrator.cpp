@@ -78,6 +78,8 @@ MCResult MCIntegrator::integrate(unsigned int numberOfMCCycles)
         }
     }
 
+    m_numberOfAcceptedMoves /= positions.size();
+
     return result;
 }
 
