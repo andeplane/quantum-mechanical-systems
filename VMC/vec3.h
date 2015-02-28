@@ -25,6 +25,18 @@ public:
     vec3 &operator*=(double scalar);
     vec3 operator/(double scalar);
     vec3 &operator/=(double scalar);
+    friend vec3 operator*(double scalar, vec3 vec) {
+        return vec*scalar;
+    }
+    friend vec3 operator+(double scalar, vec3 vec) {
+        return vec+scalar;
+    }
+    friend vec3 operator/(double scalar, vec3 vec) {
+        return vec/scalar;
+    }
+    friend vec3 operator-(double scalar, vec3 vec) {
+        return vec-scalar;
+    }
     inline vec3 operator-() { return vec3(-m_vec[0], -m_vec[1], -m_vec[2]); }
     void addComponent(int component, float value) {
         m_vec[component] += value;
@@ -44,6 +56,7 @@ public:
     double dot(vec3 &rhs);
     double length();
     void normalize();
+    vec3 normalized();
     void setToZero();
     void set(double x, double y, double z);
     inline double x() const { return m_vec[0]; }

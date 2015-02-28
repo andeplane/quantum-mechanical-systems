@@ -34,7 +34,7 @@ private:
     MCIntegratorParameters *m_parameters;
     unsigned int m_numberOfAcceptedMoves;
     vector<vec3> m_initialPositions;
-    function<void(vec3 &position)> m_walkerFunction;
+    function<void (MCIntegratorParameters *parameters, vector<vec3> &positions, int particleIndex)> m_walkerFunction;
     function<double(MCIntegratorParameters *parameters, vector<vec3> &positions)> m_trialFunction;
     function<double(MCIntegratorParameters *parameters, vector<vec3> &positions)> m_localEnergy;
     function<double(MCIntegratorParameters *parameters, vector<vec3> &positions)> m_localEnergyNumerical;
@@ -48,8 +48,8 @@ public:
     void setTrialFunction(const function<double (MCIntegratorParameters *parameters, vector<vec3> &positions)> &trialFunction);
     function<double (MCIntegratorParameters *parameters, vector<vec3> &positions)> localEnergy() const;
     void setLocalEnergy(const function<double (MCIntegratorParameters *parameters, vector<vec3> &positions)> &localEnergy);
-    function<void (vec3 &position)> walkerFunction() const;
-    void setWalkerFunction(const function<void (vec3 &position)> &walkerFunction);
+    function<void (MCIntegratorParameters *parameters, vector<vec3> &positions, int particleIndex)> walkerFunction() const;
+    void setWalkerFunction(const function<void(MCIntegratorParameters *parameters, vector<vec3> &positions, int particleIndex)> &walkerFunction);
     unsigned int numberOfParticles() const;
     unsigned int numberOfAcceptedMoves() const;
     void setNumberOfAcceptedMoves(unsigned int numberOfAcceptedMoves);

@@ -62,7 +62,7 @@ MCResult MCIntegrator::integrate(unsigned int numberOfMCCycles)
         unsigned int numberOfParticles = positions.size();
         for(unsigned int particle=0; particle < numberOfParticles; particle++) {
             vec3 oldPos = positions[particle];
-            m_walkerFunction(positions[particle]);
+            m_walkerFunction(m_parameters, positions, particle);
 
             double waveFunctionNew = m_trialFunction(m_parameters, positions);
 
@@ -135,12 +135,12 @@ void MCIntegrator::setParameters(MCIntegratorParameters *parameters)
     m_parameters = parameters;
 }
 
-function<void (vec3 &position)> MCIntegrator::walkerFunction() const
+function<void (MCIntegratorParameters *parameters, vector<vec3> &positions, int particleIndex)> MCIntegrator::walkerFunction() const
 {
     return m_walkerFunction;
 }
 
-void MCIntegrator::setWalkerFunction(const function<void (vec3 &position)> &walkerFunction)
+void MCIntegrator::setWalkerFunction(const function<void (MCIntegratorParameters *parameters, vector<vec3> &positions, int particleIndex)> &walkerFunction)
 {
     m_walkerFunction = walkerFunction;
 }

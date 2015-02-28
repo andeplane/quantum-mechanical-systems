@@ -97,7 +97,7 @@ vec3 &vec3::operator-=(double scalar) {
 vec3 vec3::operator*(double scalar) {
     return vec3(m_vec[0] * scalar,
                 m_vec[1] * scalar,
-                m_vec[2] * scalar);
+            m_vec[2] * scalar);
 }
 
 vec3 &vec3::operator*=(double scalar) {
@@ -143,6 +143,13 @@ void vec3::normalize() {
         m_vec[1] /= myLength;
         m_vec[2] /= myLength;
     }
+}
+
+vec3 vec3::normalized()
+{
+    vec3 vec = *this;
+    vec.normalize();
+    return vec;
 }
 
 void vec3::randomUniform(double min, double max) {
