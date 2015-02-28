@@ -8,7 +8,8 @@ QMAKE_CXXFLAGS += -std=c++11 -O3 -ipo
 SOURCES += main.cpp \
     mcintegrator.cpp \
     vec3.cpp \
-    random.cpp
+    random.cpp \
+    mcresult.cpp
 
 include(deployment.pri)
 qtcAddDeployment()
@@ -16,5 +17,6 @@ qtcAddDeployment()
 HEADERS += \
     mcintegrator.h \
     vec3.h \
-    random.h
+    random.h \
+    mcresult.h
 

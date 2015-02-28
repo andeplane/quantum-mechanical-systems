@@ -1,26 +1,10 @@
 #pragma once
 #include "vec3.h"
-
+#include "mcresult.h"
 #include <functional>
 #include <vector>
 using std::function;
 using std::vector;
-
-class MCResult
-{
-private:
-    unsigned int m_numSamples;
-    double m_sum;
-    double m_M;
-    double m_S;
-public:
-    MCResult();
-    void addDataPoint(double value);
-    unsigned int numberOfSamples();
-    double mean();
-    double variance();
-    double standardDeviation();
-};
 
 class MCIntegratorParameters
 {
@@ -33,7 +17,7 @@ class MCIntegrator
 private:
     MCIntegratorParameters *m_parameters;
     unsigned int m_numberOfAcceptedMoves;
-    vector<vec3> m_initialPositions;
+    vector<vec3> m_positions;
     function<void (MCIntegratorParameters *parameters, vector<vec3> &positions, int particleIndex)> m_walkerFunction;
     function<double(MCIntegratorParameters *parameters, vector<vec3> &positions)> m_trialFunction;
     function<double(MCIntegratorParameters *parameters, vector<vec3> &positions)> m_localEnergy;
@@ -41,7 +25,6 @@ private:
 public:
     MCIntegrator();
     ~MCIntegrator();
-
 
     MCResult integrate(unsigned int numberOfMCCycles);
     function<double (MCIntegratorParameters *parameters, vector<vec3> &positions)> trialFunction() const;
@@ -53,8 +36,8 @@ public:
     unsigned int numberOfParticles() const;
     unsigned int numberOfAcceptedMoves() const;
     void setNumberOfAcceptedMoves(unsigned int numberOfAcceptedMoves);
-    vector<vec3> initialPositions() const;
-    void setInitialPositions(const vector<vec3> &initialPositions);
+    vector<vec3> positions() const;
+    void setPositions(const vector<vec3> &positions);
     MCIntegratorParameters *parameters() const;
     void setParameters(MCIntegratorParameters *parameters);
     void setDefaultLocalEnergy();

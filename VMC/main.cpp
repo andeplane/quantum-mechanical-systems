@@ -39,7 +39,7 @@ void hydrogen() {
     initialPositions[0][2] = 0;
 
     integrator.setParameters(&parameters);
-    integrator.setInitialPositions(initialPositions);
+    integrator.setPositions(initialPositions);
 
     integrator.setTrialFunction([&](MCIntegratorParameters *parameters, vector<vec3> &positions) {
         HydrogenParameters *params = (HydrogenParameters *)parameters;
@@ -91,7 +91,7 @@ void helium() {
     initialPositions[1].randomGaussian(0, standardDeviation);
 
     integrator.setParameters(&parameters);
-    integrator.setInitialPositions(initialPositions);
+    integrator.setPositions(initialPositions);
 
     auto trial1 = [&](MCIntegratorParameters *parameters, vector<vec3> &positions) {
         HeliumParameters *params = (HeliumParameters *)parameters;
@@ -217,10 +217,9 @@ void heliumAlphaBetaKnown() {
 
     // Parameters
     unsigned int numberOfCycles = 1e7;
-    double timestep = 0.05;
+    double timestep = 0.005;
     double D = 0.5;
     double variance = 2*D*timestep;
-
     double standardDeviation = sqrt(variance);
     HeliumParameters parameters;
 
@@ -229,7 +228,7 @@ void heliumAlphaBetaKnown() {
     initialPositions[1].randomGaussian(0, standardDeviation);
 
     integrator.setParameters(&parameters);
-    integrator.setInitialPositions(initialPositions);
+    integrator.setPositions(initialPositions);
 
     auto trial2 = [&](MCIntegratorParameters *parameters, vector<vec3> &positions) {
         HeliumParameters *params = (HeliumParameters *)parameters;
@@ -279,13 +278,13 @@ void heliumAlphaBetaKnown() {
     integrator.setWalkerFunction([&](MCIntegratorParameters *parameters, vector<vec3> &positions, int particleIndex) {
         // stepLength = variance = 2*D*dt
         // sqrt(stepLength) = standardDeviation = sqrt(2*D*dt)
-        // In importance sampling, we want to add D*F*dt = 0.5*stepLength*F
+        // In importance sampling, we want to add D*F*dt = 0.5*variance*F =
         vec3 deltaR;
         deltaR.randomGaussian(0.0, standardDeviation);
         vec3 F = driftF(parameters, positions, particleIndex);
         deltaR += 0.5*variance*F;
 
-        // This gives rNew = rOld + gaussian*2*Ddt + D*dt*F (eq 14.24 in MHJ Computational Physics, 2014)
+        // This gives rNew = rOld + gaussian*sqrt(2*Ddt) + D*dt*F (eq 14.24 in MHJ Computational Physics, 2014)
         positions[particleIndex].add(deltaR);
     });
 
