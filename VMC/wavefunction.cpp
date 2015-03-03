@@ -89,3 +89,49 @@ void WaveFunction::setNumericalLocalEnergy()
     };
 }
 
+WaveFunction WaveFunctions::Helium()
+{
+    WaveFunction psi;
+    psi.evaluate = [&](MCIntegratorParameters *parameters, vector<vec3> &positions) {
+            HeliumParameters *params = (HeliumParameters *)parameters;
+            vec3 deltaR = positions[0];
+            deltaR.subtract(positions[1]);
+            double r1 = positions[0].length();
+            double r2 = positions[1].length();
+            double r12 = deltaR.length();
+
+            return exp(-params->alpha*(r1 + r2))*exp(r12/(2*(1 + params->beta*r12)));
+        };
+
+    psi.localEnergy = [&](MCIntegratorParameters *parameters, vector<vec3> &positions) {
+        HeliumParameters *params = (HeliumParameters *)parameters;
+        double r1DotR2 = positions[0].dot(positions[1]);
+        double r1 = positions[0].length();
+        double r2 = positions[1].length();
+        vec3 deltaR = positions[0];
+        deltaR.subtract(positions[1]);
+        double r12 = deltaR.length();
+        double oneOverR12 = 1.0 / r12;
+        double oneOverR1 = 1.0 / r1;
+        double oneOverR2 = 1.0 / r2;
+
+        double EL1 = (params->alpha - params->charge)*(oneOverR1 + oneOverR2) + oneOverR12 - params->alpha*params->alpha;
+        double oneOverTwoTimeOnePlusBetaR12Sq = 0.5/( (1.0 + params->beta*r12)*(1.0 + params->beta*r12));
+
+        double EL2 = EL1 + oneOverTwoTimeOnePlusBetaR12Sq*(params->alpha*(r1 + r2)*oneOverR12*(1.0 - r1DotR2*oneOverR1*oneOverR2) - oneOverTwoTimeOnePlusBetaR12Sq - 2.0*oneOverR12 + 2.0*params->beta/(1.0 + params->beta*r12));
+        return EL2;
+    };
+
+    psi.gradient = [&](MCIntegratorParameters *parameters, vector<vec3> &positions, vector<vec3> &quantumForces) {
+        HeliumParameters *params = (HeliumParameters *)parameters;
+        double waveFunctionValue = psi.evaluate(parameters, positions);
+        vec3 deltaR = positions[0];
+        deltaR.subtract(positions[1]);
+        double r12 = deltaR.length();
+        deltaR.normalize();
+        quantumForces[0] = 0.5*waveFunctionValue*( deltaR/((1.0 + params->beta*r12)*(1.0 + params->beta*r12)) - 2.0*params->alpha*positions[0].normalized() );
+        quantumForces[1] = 0.5*waveFunctionValue*( -deltaR/((1.0 + params->beta*r12)*(1.0 + params->beta*r12)) - 2.0*params->alpha*positions[1].normalized() );
+    };
+
+    return psi;
+}

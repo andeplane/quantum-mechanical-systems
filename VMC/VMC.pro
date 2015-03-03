@@ -20,5 +20,6 @@ HEADERS += \
     vec3.h \
     random.h \
     mcresult.h \
-    wavefunction.h
+    wavefunction.h \
+    mcintegratorparameters.h
 

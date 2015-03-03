@@ -1,16 +1,14 @@
 #ifndef WAVEFUNCTION_H
 #define WAVEFUNCTION_H
 #include "vec3.h"
+#include "mcintegratorparameters.h"
 #include <functional>
 #include <vector>
 using std::function;
 using std::vector;
-class MCIntegratorParameters;
 
 class WaveFunction
 {
-private:
-
 public:
     WaveFunction();
     ~WaveFunction();
@@ -21,4 +19,25 @@ public:
     void setNumericalLocalEnergy();
 };
 
+struct WaveFunctions
+{
+public:
+    static WaveFunction Helium();
+};
+
+class HydrogenParameters : public MCIntegratorParameters
+{
+public:
+    double alpha = 0.7;
+};
+
+class HeliumParameters : public MCIntegratorParameters
+{
+public:
+    double alpha = 0.7;
+    double beta = 0.7;
+    HeliumParameters() {
+        charge = 2.0;
+    }
+};
 #endif // WAVEFUNCTION_H
