@@ -53,7 +53,7 @@ public:
         m_vec[2] += rhs.z()*scalar;
     }
     vec3 cross(vec3 &rhs);
-    double dot(vec3 &rhs);
+    double dot(vec3 rhs);
     double length();
     void normalize();
     vec3 normalized();
@@ -62,6 +62,7 @@ public:
     inline double x() const { return m_vec[0]; }
     inline double y() const { return m_vec[1]; }
     inline double z() const { return m_vec[2]; }
+
     inline double &operator[](int index) { return m_vec[index]; }
     inline double operator[](int index) const { return m_vec[index]; }
     inline double lengthSquared() { return m_vec[0]*m_vec[0] + m_vec[1]*m_vec[1] + m_vec[2]*m_vec[2]; }
